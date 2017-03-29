@@ -13,8 +13,8 @@ const TwitterStrategy = require('passport-twitter');
 const GoogleStrategy = require('passport-google');
 const FacebookStrategy = require('passport-facebook');
 
-// const config = require('./config.js');
-// funct = require('./functions.js');
+const config = require('./config.js');
+funct = require('./functions.js');
 
 const app = express();
 

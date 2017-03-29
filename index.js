@@ -39,9 +39,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(function(req, res, next) {
-    const err = req.session.error,
-        msg = req.session.notice,
-        success = req.session.success;
+    const err = req.session.error;
+    const msg = req.session.notice;
+    const success = req.session.success;
     
     delete req.session.error;
     delete req.session.success;

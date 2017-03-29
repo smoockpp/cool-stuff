@@ -1,20 +1,86 @@
-var express = require('express');
-var app = express();
+const express = require('express');
+const exphbs = require('express-handlebars');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const methodOverride = require('method-override');
+const session = require('express-session');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const TwitterStrategy = require('passport-twitter');
+const GoogleStrategy = require('passport-google');
+const FacebookStrategy = require('passport-facebook');
 
-app.set('port', (process.env.PORT || 5000));
+// const config = require('./config.js');
+// funct = require('./functions.js');
 
-app.use(express.static(__dirname + '/public'));
+const app = express();
 
-// views is directory for all template files
-app.set('views', __dirname + '/views');
-app.set('view engine', 'ejs');
+/**************************
+ *        Passport
+ **************************/
 
-app.get('/', function(request, response) {
-  response.render('pages/index');
+
+
+/**************************
+ *        Express
+ **************************/
+
+/* Express configuration goes here */
+app.use(logger('combined'));
+app.use(cookieParser);
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(methodOverride('X-HTTP-Method-Override'));
+app.use(session({ secret: 'supernova', saveUninitialized: true, resave: true }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(function(req, res, next) {
+    let err = req.session.error,
+        msg = req.session.notice,
+        success = req.session.success;
+    
+    delete req.session.error;
+    delete req.session.success;
+    delete req.session.notice;
+
+    if (err) res.locals.error = err;
+    if (msg) res.locals.notice = msg;
+    if (success) res.locals.success = success;
+
+    next(); // move next
 });
 
-app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
+
+/* Tell express to use Handlebars templates */
+const hbs = exphbs.create({
+    defaultLayout: 'main',
 });
+
+app.engine('handlebars', hbs.engine);
+app.set('view engine', 'handlebars');
+
+/**************************
+ *        ROUTES
+ **************************/
+
+
+
+/**************************
+ *        PORT
+ **************************/
+
+const port = process.env.PORT || 5000; // Own port or pull from .env file
+app.listen(port);
+console.log('Listening on ' + port + '!');
+
+
+
+
+
+
+
+
 
 

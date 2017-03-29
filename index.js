@@ -14,7 +14,7 @@ const GoogleStrategy = require('passport-google');
 const FacebookStrategy = require('passport-facebook');
 
 const config = require('./config.js');
-funct = require('./functions.js');
+const funct = require('./functions.js');
 
 const app = express();
 

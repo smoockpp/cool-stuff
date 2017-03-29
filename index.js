@@ -1,3 +1,5 @@
+'use strict';
+
 const express = require('express');
 const exphbs = require('express-handlebars');
 const logger = require('morgan');
@@ -37,7 +39,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(function(req, res, next) {
-    let err = req.session.error,
+    const err = req.session.error,
         msg = req.session.notice,
         success = req.session.success;
     
@@ -65,6 +67,28 @@ app.set('view engine', 'handlebars');
  *        ROUTES
  **************************/
 
+/* Homepage route */
+app.get('/', function(req, res) {
+    res.render('home', {user: req.user});
+});
+
+/* Signup route */
+app.get('/signin', function(req, res) {
+    res.render('signin');
+});
+
+app.post('/local-reg', passport.authenticate('local-signup', {
+    successRedirect: '/',
+    failureRedirect: '/signin'
+}));
+
+app.get('/logout', function(req, res) {
+    const name = req.user.username;
+    console.log('LOGGIN OUT' + req.user.username);
+    req.logout();
+    res.redirect('/');
+    req.session.notice = 'You have successfully been logged out ' + name + '!';
+});
 
 
 /**************************
@@ -72,7 +96,7 @@ app.set('view engine', 'handlebars');
  **************************/
 
 const port = process.env.PORT || 5000; // Own port or pull from .env file
-app.listen(port);
+app.listen(3000);
 console.log('Listening on ' + port + '!');
 
 
